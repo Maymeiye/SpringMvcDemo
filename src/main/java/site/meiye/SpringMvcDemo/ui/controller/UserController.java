@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import site.meiye.SpringMvcDemo.exceptions.UserServiceException;
 import site.meiye.SpringMvcDemo.ui.model.request.UpdateUserDetailsRequestModel;
 import site.meiye.SpringMvcDemo.ui.model.request.UserDetailsRequestModel;
 import site.meiye.SpringMvcDemo.ui.model.response.UserRest;
@@ -29,9 +30,9 @@ public class UserController {
                 produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserRest> getUser(@PathVariable String userId){
 
-        String firstName = null;
-        int firstNameLength = firstName.length();
-
+//        String firstName = null;
+//        int firstNameLength = firstName.length();
+        if(true) throw new UserServiceException("A user service exception is thrown");
 
         if (users.containsKey(userId)) {
             return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
