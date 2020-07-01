@@ -8,10 +8,15 @@ import site.meiye.SpringMvcDemo.ui.model.request.UserDetailsRequestModel;
 import site.meiye.SpringMvcDemo.ui.model.response.UserRest;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("users")// http://localhost:8080/users
 public class UserController {
+
+    Map<String, UserRest> users;
 
     @GetMapping
     public String getUsers(@RequestParam(value = "page", defaultValue = "1") int page,
@@ -22,12 +27,12 @@ public class UserController {
     @GetMapping(path = "/{userId}",
                 produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserRest> getUser(@PathVariable String userId){
-        UserRest user = new UserRest();
-        user.setFistName("Mei");
-        user.setLastName("Ye");
-        user.setEmail("meiye@gmail.com");
-
-        return new ResponseEntity<UserRest>(user, HttpStatus.OK);
+        if (users.containsKey(userId)) {
+            return new ResponseEntity<>(users.get(userId), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
@@ -38,6 +43,11 @@ public class UserController {
         user.setFistName(userDetails.getFirstName());
         user.setLastName(userDetails.getLastName());
         user.setEmail(userDetails.getEmail());
+
+        if (users == null) users = new HashMap<>();
+        String userId = UUID.randomUUID().toString();
+        user.setUserId(userId);
+        users.put(userId, user);
 
         return new ResponseEntity<UserRest>(user, HttpStatus.OK);
     }
