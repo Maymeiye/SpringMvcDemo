@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import site.meiye.SpringMvcDemo.ui.model.request.UpdateUserDetailsRequestModel;
 import site.meiye.SpringMvcDemo.ui.model.request.UserDetailsRequestModel;
 import site.meiye.SpringMvcDemo.ui.model.response.UserRest;
 
@@ -52,9 +53,17 @@ public class UserController {
         return new ResponseEntity<UserRest>(user, HttpStatus.OK);
     }
 
-    @PutMapping
-    public String updateUser(){
-        return "updateUser method was called";
+    @PutMapping(path = "/{userId}",
+                 consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+                 produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public UserRest updateUser(@PathVariable String userId, @Valid @RequestBody UpdateUserDetailsRequestModel userDetails){
+        UserRest storedUserDetails = users.get(userId);
+        storedUserDetails.setFistName(userDetails.getFirstName());
+        storedUserDetails.setLastName(userDetails.getLastName());
+
+        users.put(userId, storedUserDetails);
+
+        return storedUserDetails;
     }
 
     @DeleteMapping
