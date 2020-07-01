@@ -5,9 +5,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("users")// http://localhost:8080/users
 public class UserController {
+
     @GetMapping
-    public String getUser(){
-        return "getUser method was called";
+    public String getUsers(@RequestParam(value = "page") int page,
+                           @RequestParam(value = "limit") int limit) {
+        return "get users method was called: page: " + page + ", limit: " + limit;
+    }
+
+    @GetMapping(path = "/{userId}")
+    public String getUser(@PathVariable String userId){
+
+
+        return "getUser method was called with = "+ userId;
     }
 
     @PostMapping
