@@ -1,8 +1,10 @@
 package site.meiye.SpringMvcDemo.userservice.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import site.meiye.SpringMvcDemo.shared.Utils;
 import site.meiye.SpringMvcDemo.ui.model.request.UserDetailsRequestModel;
 import site.meiye.SpringMvcDemo.ui.model.response.UserRest;
 import site.meiye.SpringMvcDemo.userservice.UserService;
@@ -14,6 +16,16 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
     Map<String, UserRest> users;
+    Utils utils;
+
+    public UserServiceImpl() {
+    }
+
+    @Autowired
+    public UserServiceImpl(Utils utils) {
+        this.utils = utils;
+    }
+
     @Override
     public UserRest createUser(UserDetailsRequestModel userDetails) {
 
@@ -22,7 +34,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userDetails.getLastName());
         user.setEmail(userDetails.getEmail());
 
-        String userId = UUID.randomUUID().toString();
+        String userId = utils.generateUserId();
         user.setUserId(userId);
 
         if (users == null) users = new HashMap<>();
