@@ -1,5 +1,6 @@
 package site.meiye.SpringMvcDemo.ui.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import site.meiye.SpringMvcDemo.exceptions.UserServiceException;
 import site.meiye.SpringMvcDemo.ui.model.request.UpdateUserDetailsRequestModel;
 import site.meiye.SpringMvcDemo.ui.model.request.UserDetailsRequestModel;
 import site.meiye.SpringMvcDemo.ui.model.response.UserRest;
+import site.meiye.SpringMvcDemo.userservice.UserService;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -19,6 +21,9 @@ import java.util.UUID;
 public class UserController {
 
     Map<String, UserRest> users;
+
+    @Autowired
+    UserService userService;
 
     @GetMapping
     public String getUsers(@RequestParam(value = "page", defaultValue = "1") int page,
@@ -46,15 +51,7 @@ public class UserController {
                  produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserDetailsRequestModel userDetails){
 
-        UserRest user = new UserRest();
-        user.setFistName(userDetails.getFirstName());
-        user.setLastName(userDetails.getLastName());
-        user.setEmail(userDetails.getEmail());
-
-        if (users == null) users = new HashMap<>();
-        String userId = UUID.randomUUID().toString();
-        user.setUserId(userId);
-        users.put(userId, user);
+        UserRest user = userService.createUser(userDetails);
 
         return new ResponseEntity<UserRest>(user, HttpStatus.OK);
     }
